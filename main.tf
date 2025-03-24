@@ -12,11 +12,13 @@ terraform {
 }
 
 variable "DO_TOKEN" {}
-variable "DNSIMPLE_TOKEN" {}
-variable "DNSIMPLE_ACCOUNT" {}
 
 provider "digitalocean" {
   token = var.DO_TOKEN
+}
+
+data "digitalocean_ssh_key" "main_machine" {
+  name = "ssh_destruidor"
 }
 
 resource "digitalocean_droplet" "web" {
@@ -24,6 +26,7 @@ resource "digitalocean_droplet" "web" {
   name    = "alexandre-o-grande"
   region  = "fra1"
   size    = "s-1vcpu-1gb"
+  ssh_keys = [data.digitalocean_ssh_key.main_machine.id]
 }
 
 resource "digitalocean_domain" "default" {
